@@ -1,17 +1,17 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#173b32"><title>CalePro V1</title>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#173b32"><title>CalePro V3</title>
 <style>
 :root{--g:#173b32;--g2:#246b52;--bg:#f4f7f4;--line:#dce4de;--muted:#68756e}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#17211d;font:15px system-ui,-apple-system,sans-serif}header{background:var(--g);color:white;padding:14px 16px;position:sticky;top:0;z-index:9}.brand{font-weight:800;font-size:22px}.small{font-size:12px;color:var(--muted)}header .small{color:#d9e7de}main{max-width:1100px;margin:auto;padding:12px;display:grid;gap:12px}.card{background:white;border:1px solid var(--line);border-radius:14px;padding:13px}h2{font-size:16px;margin:0 0 10px}.row{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.field{display:grid;gap:5px;flex:1;min-width:100px}.field label{font-size:12px;color:var(--muted)}input,select{font:inherit;border:1px solid #cbd7ce;border-radius:9px;padding:9px;min-width:0;width:100%;background:white}input[type=number]{font-size:20px;font-weight:700}button{font:inherit;font-weight:650;border:0;border-radius:10px;padding:10px 12px;min-height:40px;background:var(--g2);color:white;cursor:pointer}button.secondary{background:#edf3ef;color:var(--g)}button.danger{background:#fff0f0;color:#991b1b}button:disabled{opacity:.4}.stage-scroll{overflow:auto;max-height:65vh;border:1px solid var(--line);border-radius:10px;background:#e9eeea;touch-action:pan-x pan-y}.stage{position:relative;width:100%;line-height:0;transform-origin:top left}.stage canvas{display:block;width:100%;height:auto;background:white}.empty{line-height:1.5;text-align:center;padding:50px 14px;color:var(--muted)}.pin{position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;padding:0;min-height:0;border:2px solid white;border-radius:50%;box-shadow:0 1px 5px #0007;background:#64748b;color:white;font-size:9px;display:flex;align-items:center;justify-content:center;touch-action:none}.pin.selected{outline:3px solid #fbbf24;z-index:3}.pin.green{background:#15803d}.pin.orange{background:#d97706}.pin.red,.pin.alert{background:#dc2626}.toolbar{display:flex;gap:6px;margin-bottom:8px}.toolbar button{flex:1}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:10px 0}.stat{background:#f4f7f4;border-radius:10px;padding:9px}.stat b{display:block;font-size:20px}.stat span{font-size:11px;color:var(--muted)}.notice{padding:10px;border-radius:10px;background:#fff7e6;color:#854d0e;font-size:13px}.notice.ok{background:#eaf7ee;color:#166534}.notice.error{background:#fff0f0;color:#991b1b}.hidden{display:none!important}.input-actions{display:grid;grid-template-columns:42px 1fr 42px;gap:7px}.input-actions button{font-size:22px;padding:6px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:12px}td,th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}td:first-child,th:first-child{text-align:left}th{background:#f5f7f5}.pill{border-radius:20px;padding:3px 7px;font-size:11px;font-weight:700}.pill.green{background:#dcfce7;color:#166534}.pill.orange{background:#ffedd5;color:#9a3412}.pill.red{background:#fee2e2;color:#991b1b}.footer{text-align:center;color:var(--muted);font-size:11px;padding:8px}
 @media(min-width:820px){main{grid-template-columns:minmax(0,1.4fr) minmax(330px,.8fr);align-items:start}.plan{grid-row:1 / span 4}.stage-scroll{max-height:75vh}}
 </style></head><body>
-<header><div class="brand">CalePro</div><div class="small">Relevé et calcul de cales de massifs · Prototype V1</div></header>
+<header><div class="brand">CalePro</div><div class="small">Relevé et calcul de cales de massifs · Détection assistée · V2</div></header>
 <main>
-<section class="card"><h2>1 · Chantier et plan</h2><div class="row"><div class="field"><label>Code affaire</label><input id="job" placeholder="Ex. 11501"></div><div class="field"><label>Client</label><input id="client" placeholder="Nom du client"></div></div><div class="field" style="margin-top:9px"><label>Importer un plan PDF</label><input id="pdf" type="file" accept=".pdf,application/pdf"></div><p class="small">V1 importe la première page. La détection automatique n'est pas encore implémentée : les repères se placent manuellement pour tester le flux et le calcul.</p><div class="row" style="margin-top:8px"><div class="field"><label>Nord sur le plan</label><select id="north"><option value="up">Haut ↑</option><option value="right">Droite →</option><option value="down">Bas ↓</option><option value="left">Gauche ←</option></select></div><button class="secondary" id="orient">Réattribuer N/S/E/O</button></div><div class="row" style="margin-top:9px"><button class="secondary" id="add">＋ Ajouter un massif</button><button id="confirm">Valider les massifs</button></div><div id="planStatus" class="small" style="margin-top:7px">Importe un plan, ajoute les repères et vérifie leur position.</div></section>
-<section class="card plan"><div class="row" style="justify-content:space-between;align-items:center"><h2>2 · Plan et mesures</h2><span id="pinCount" class="small">0 massif</span></div><div class="toolbar"><button class="secondary" id="zm">− Zoom</button><button class="secondary" id="zp">＋ Zoom</button><button class="secondary" id="zr">Ajuster</button></div><div class="stage-scroll" id="scroll"><div class="stage" id="stage"><div class="empty" id="empty">Importe un PDF ou ajoute des repères sur un plan vide pour tester.</div><canvas id="canvas" class="hidden"></canvas></div></div><p class="small">Touchez un repère pour le sélectionner. Déplacez-le pour corriger sa position. En mode ajout, touchez le plan pour placer un massif.</p></section>
+<section class="card"><h2>1 · Chantier et plan</h2><div class="row"><div class="field"><label>Code affaire</label><input id="job" placeholder="Ex. 11501"></div><div class="field"><label>Client</label><input id="client" placeholder="Nom du client"></div></div><div class="field" style="margin-top:9px"><label>Importer un plan PDF</label><input id="pdf" type="file" accept=".pdf,application/pdf"></div><p class="small">Importe la première page puis lance la détection assistée. Vérifie chaque repère : la détection dépend de la qualité et du dessin du plan.</p><div class="row" style="margin-top:8px"><div class="field"><label>Nord sur le plan</label><select id="north"><option value="up">Haut ↑</option><option value="right">Droite →</option><option value="down">Bas ↓</option><option value="left">Gauche ←</option></select></div><button class="secondary" id="orient">Réattribuer N/S/E/O</button></div><div class="row" style="margin-top:9px"><button id="detect">Détecter les massifs</button><button class="secondary" id="add">＋ Ajouter / corriger</button><button id="confirm">Valider les massifs</button></div><div id="planStatus" class="small" style="margin-top:7px">Importe un plan, ajoute les repères et vérifie leur position.</div></section>
+<section class="card plan"><div class="row" style="justify-content:space-between;align-items:center"><h2>2 · Plan et mesures</h2><span id="pinCount" class="small">0 massif</span></div><div class="toolbar"><button class="secondary" id="zm">− Zoom</button><button class="secondary" id="zp">＋ Zoom</button><button class="secondary" id="zr">Ajuster</button></div><div class="stage-scroll" id="scroll"><div class="stage" id="stage"><div class="empty" id="empty">Importe un PDF ou ajoute des repères sur un plan vide pour tester.</div><canvas id="canvas" class="hidden"></canvas></div></div><p class="small">Les repères détectés sont des propositions : vérifie-les tous. Déplace-les, supprime les faux positifs et utilise « Ajouter / corriger » pour ajouter un massif manquant.</p></section>
 <section class="card"><h2>3 · Mesure du massif</h2><div id="none" class="small">Sélectionne un massif sur le plan.</div><div id="editor" class="hidden"><div id="sel" style="font-size:18px;font-weight:800;margin-bottom:8px"></div><div class="row"><div class="field"><label>Identifiant</label><input id="id"></div><div class="field"><label>Mesure signée (mm)</label><div class="input-actions"><button class="secondary" id="minus">−</button><input id="val" type="number" step="1" inputmode="numeric" placeholder="0"><button class="secondary" id="plus">＋</button></div></div></div><p class="small">Valeur entière en mm par rapport au zéro initial. Négatif = plus bas ; positif = plus haut.</p><div class="row" style="margin-top:8px"><button class="secondary" id="setzero">Définir zéro initial</button><button id="save">Valider la mesure</button></div><div id="alert" class="notice hidden" style="margin-top:8px"></div><button class="danger" id="del" style="margin-top:8px">Supprimer ce massif</button></div></section>
 <section class="card"><h2>4 · Vérification et calcul</h2><div class="stats"><div class="stat"><b id="total">0</b><span>Massifs</span></div><div class="stat"><b id="measured">0</b><span>Mesurés</span></div><div class="stat"><b id="alerts">0</b><span>À confirmer</span></div></div><div id="ready" class="notice">Ajoute et valide les massifs.</div><div class="row" style="margin-top:10px"><button id="calc" disabled>Calculer les cales</button><button id="export" class="secondary" disabled>Exporter PDF</button></div><p class="small">Calcul verrouillé tant que le plan n'est pas validé, qu'une mesure manque ou qu'une alerte reste à confirmer.</p></section>
 <section class="card hidden" id="result"><h2>5 · Résultat</h2><div id="summary"></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Mesure</th><th>Écart au zéro final</th><th>Cales</th><th>Épaisseur</th><th>Résiduel</th></tr></thead><tbody id="rows"></tbody></table></div></section>
-</main><div class="footer">CalePro V1 · Prototype de validation · Données conservées uniquement dans cette session</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</main><div class="footer">CalePro V3 · Prototype de détection assistée · Données conservées uniquement dans cette session</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script async src="https://docs.opencv.org/4.x/opencv.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 (()=>{const $=x=>document.getElementById(x),S={pins:[],selected:null,adding:false,confirmed:false,zoom:1,initial:null,result:null,confirmedAlerts:new Set(),north:'up',hasPdf:false};
 const c=$('canvas'),ctx=c.getContext('2d'),stage=$('stage');if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -23,7 +23,72 @@ function invalidate(){S.result=null;$('result').classList.add('hidden');$('expor
 function status(){let missing=S.pins.filter(p=>!p.measured).length,alerts=S.pins.filter(p=>p.alert&&!S.confirmedAlerts.has(p.id)).length,ok=S.confirmed&&S.pins.length&&missing===0&&alerts===0;$('calc').disabled=!ok;$('ready').className='notice'+(ok?' ok':alerts?' error':'');$('ready').textContent=!S.pins.length?'Ajoute au moins un massif.':!S.confirmed?'Plan à valider.':missing?missing+' mesure(s) manquante(s).':alerts?alerts+' alerte(s) à confirmer.':'Prêt pour le calcul.';$('planStatus').textContent=S.confirmed?'Plan validé.':'Vérifie les repères puis valide le plan.'}
 function select(id){S.selected=id;let p=S.pins.find(p=>p.id===id);if(!p)return;$('none').classList.add('hidden');$('editor').classList.remove('hidden');$('sel').textContent=p.id;$('id').value=p.id;$('val').value=p.measured?p.value:'';$('alert').classList.toggle('hidden',!(p.alert&&!S.confirmedAlerts.has(p.id)));if(p.alert&&!S.confirmedAlerts.has(p.id))$('alert').textContent='Valeur atypique : vérifie puis confirme en validant la mesure.';draw()}
 function detect(){let a=S.pins.filter(p=>p.measured).map(p=>p.value).sort((a,b)=>a-b);if(a.length<4)return;let med=a.length%2?a[(a.length-1)/2]:(a[a.length/2-1]+a[a.length/2])/2;let dev=a.map(v=>Math.abs(v-med)).sort((a,b)=>a-b),mad=dev.length%2?dev[(dev.length-1)/2]:(dev[dev.length/2-1]+dev[dev.length/2])/2,th=Math.max(10,3*1.4826*mad);S.pins.forEach(p=>p.alert=p.measured&&Math.abs(p.value-med)>th)}
-$('pdf').onchange=async e=>{let f=e.target.files[0];if(!f)return;if(!window.pdfjsLib){alert('Lecteur PDF indisponible : vérifie la connexion.');return}try{let pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise,page=await pdf.getPage(1),vp=page.getViewport({scale:1.5});c.width=vp.width;c.height=vp.height;await page.render({canvasContext:ctx,viewport:vp}).promise;c.classList.remove('hidden');$('empty').classList.add('hidden');stage.style.aspectRatio=vp.width+'/'+vp.height;S.hasPdf=true;S.pins=[];S.confirmed=false;invalidate();alert('Plan importé (page 1). Place les repères manuellement avec « Ajouter un massif ».') }catch(e){alert('Lecture PDF impossible : '+e.message)}};
+$('pdf').onchange=async e=>{let f=e.target.files[0];if(!f)return;if(!window.pdfjsLib){alert('Lecteur PDF indisponible : vérifie la connexion.');return}try{let pdf=await pdfjsLib.getDocument({data:await f.arrayBuffer()}).promise,page=await pdf.getPage(1),vp=page.getViewport({scale:1.5});c.width=vp.width;c.height=vp.height;await page.render({canvasContext:ctx,viewport:vp}).promise;c.classList.remove('hidden');$('empty').classList.add('hidden');stage.style.aspectRatio=vp.width+'/'+vp.height;S.hasPdf=true;S.pins=[];S.confirmed=false;S.result=null;invalidate();alert('Plan importé (page 1). Clique sur « Détecter les massifs » pour proposer des repères automatiquement, puis vérifie-les.') }catch(e){alert('Lecture PDF impossible : '+e.message)}};
+
+$('detect').onclick=async()=>{
+ if(!S.hasPdf){alert('Importe d’abord un plan PDF.');return}
+ if(!window.cv||!cv.Mat){alert('Le module de détection est encore en chargement. Attends quelques secondes puis réessaie. Une connexion Internet est nécessaire.');return}
+ if(S.pins.length&&!confirm('Relancer la détection remplacera les repères actuels. Continuer ?'))return;
+ const statusEl=$('planStatus');statusEl.textContent='Analyse du plan en cours…';
+ let src=null,gray=null,bin=null,contours=null,hier=null;
+ try{
+  // Détection orientée plan de calage : carrés colorés, principalement dans la zone d’implantation supérieure.
+  // Le rendu PDF est analysé en HSV : les couleurs des massifs ressortent mieux que les traits fins et annotations.
+  const W=c.width,H=c.height, pageArea=W*H;
+  const src=cv.imread(c), hsv=new cv.Mat(), mask=new cv.Mat(), contours=new cv.MatVector(), hier=new cv.Mat();
+  try{
+   cv.cvtColor(src,hsv,cv.COLOR_RGBA2RGB);
+   cv.cvtColor(hsv,hsv,cv.COLOR_RGB2HSV);
+   // Un massif est un aplat coloré/saturé. Gris clairs également admis, mais avec une saturation faible
+   // et une luminosité suffisante pour éviter les axes noirs.
+   const channels=new cv.MatVector();cv.split(hsv,channels);
+   const sat=channels.get(1), val=channels.get(2);
+   const satMask=new cv.Mat(), valMask=new cv.Mat(), grayMask=new cv.Mat();
+   cv.threshold(sat,satMask,32,255,cv.THRESH_BINARY);
+   cv.threshold(val,valMask,65,255,cv.THRESH_BINARY);
+   cv.bitwise_and(satMask,valMask,mask);
+   // Autorise les massifs gris/noir tramés : détecte aussi des zones compactes claires peu saturées.
+   cv.threshold(val,grayMask,105,255,cv.THRESH_BINARY);
+   cv.bitwise_or(mask,grayMask,mask);
+   // La page est paysage : limite aux bandes d’implantation en haut et exclut les détails de massif en bas.
+   const roiY=Math.round(H*.105), roiH=Math.round(H*.31);
+   const roi=mask.roi(new cv.Rect(0,roiY,W,roiH));
+   let kernel=cv.getStructuringElement(cv.MORPH_RECT,new cv.Size(3,3));
+   cv.morphologyEx(roi,roi,cv.MORPH_CLOSE,kernel);kernel.delete();
+   cv.findContours(roi,contours,hier,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE);
+   const candidates=[];
+   for(let i=0;i<contours.size();i++){
+    const cnt=contours.get(i), r=cv.boundingRect(cnt), area=cv.contourArea(cnt);
+    const w=r.width,h=r.height,ar=w/h,boxArea=w*h;
+    // Taille relative au plan : les gros détails et petits caractères sont exclus.
+    if(w<Math.max(7,W*.006)||h<Math.max(7,H*.008)||w>W*.035||h>H*.06)continue;
+    if(ar<.58||ar>1.55||boxArea<pageArea*.000035||boxArea>pageArea*.0022)continue;
+    const fill=area/boxArea;
+    if(fill<.20)continue;
+    // Les contours doivent avoir une couleur ou un aplat cohérent; filtre sur la saturation moyenne locale.
+    const rr=new cv.Rect(Math.max(0,r.x),Math.max(0,r.y),Math.min(w,W-r.x),Math.min(h,roiH-r.y));
+    const localSat=sat.roi(new cv.Rect(rr.x,rr.y+roiY,rr.width,rr.height));
+    const meanSat=cv.mean(localSat)[0];localSat.delete();
+    if(meanSat<18 && fill<.55)continue;
+    candidates.push({x:r.x+w/2,y:r.y+roiY+h/2,w,h,area,fill});
+   }
+   roi.delete();satMask.delete();valMask.delete();grayMask.delete();sat.delete();val.delete();channels.delete();
+   // Fusionne les doublons proches, en conservant le candidat le plus compact.
+   candidates.sort((a,b)=>b.area-a.area);const unique=[];
+   for(const a of candidates){
+    if(unique.some(b=>Math.abs(a.x-b.x)<Math.max(a.w,b.w)*.65&&Math.abs(a.y-b.y)<Math.max(a.h,b.h)*.65))continue;
+    unique.push(a);
+   }
+   src.delete();hsv.delete();mask.delete();contours.delete();hier.delete();
+   if(!unique.length){alert('Aucun carré de massif détecté automatiquement dans la zone d’implantation. Tu peux ajouter les repères manuellement.');statusEl.textContent='Aucun massif proposé : détection manuelle nécessaire.';return}
+  S.pins=unique.map((a,i)=>({id:'M'+(i+1),x:a.x/W,y:a.y/H,measured:false,value:null,alert:false,manual:false,detected:true}));
+  S.selected=null;S.confirmed=false;S.confirmedAlerts.clear();S.initial=null;renumber();invalidate();
+  statusEl.textContent=unique.length+' repère(s) proposé(s). Vérifie le plan, supprime les faux positifs et ajoute les massifs manquants avant validation.';
+  alert(unique.length+' repère(s) proposé(s). Attention : ce résultat est une détection assistée, pas une garantie. Vérifie chaque massif avant de valider.');
+ }catch(err){console.error(err);alert('La détection a échoué. Tu peux ajouter les repères manuellement. Détail : '+err.message);statusEl.textContent='Détection échouée : ajout manuel disponible.'}
+ finally{[src,gray,bin,contours,hier].forEach(x=>{if(x&&x.delete)x.delete()})}
+};
+
 $('add').onclick=()=>{S.adding=!S.adding;$('add').textContent=S.adding?'Touchez le plan pour placer…':'＋ Ajouter un massif';$('add').classList.toggle('danger',S.adding)};
 stage.onclick=e=>{if(!S.adding)return;let r=stage.getBoundingClientRect(),p={id:'M'+(S.pins.length+1),x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height,measured:false,value:null,alert:false,manual:false};S.pins.push(p);S.adding=false;$('add').textContent='＋ Ajouter un massif';S.selected=p.id;S.confirmed=false;renumber();invalidate();select(p.id)};
 $('orient').onclick=()=>{S.north=$('north').value;renumber();S.confirmed=false;invalidate()};
